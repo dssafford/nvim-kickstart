@@ -6,7 +6,7 @@ return {
   },
   lazy = false,
   keys = {
-    { '<leader>ha', function() require('harpoon'):list():append() end, desc = 'Harpoon add file' },
+    { '<leader>ha', function() require('harpoon'):list():add() end, desc = 'Harpoon add file' },
     { '<leader>ht', function() require('harpoon').ui:toggle_quick_menu(require('harpoon'):list()) end, desc = 'Harpoon toggle menu' },
     { '<leader>h1', function() require('harpoon'):list():select(1) end, desc = 'Harpoon file 1' },
     { '<leader>h2', function() require('harpoon'):list():select(2) end, desc = 'Harpoon file 2' },

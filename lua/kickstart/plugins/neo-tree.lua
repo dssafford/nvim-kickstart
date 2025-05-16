@@ -18,7 +18,24 @@ return {
       window = {
         mappings = {
           ['\\'] = 'close_window',
+          ['H'] = 'toggle_hidden', -- Use Shift+H to toggle visibility
         },
+      },
+      filtered_items = {
+        visible = false,
+        hide_dotfiles = true,
+        hide_gitignored = true,
+        hide_by_name = {
+          'node_modules',
+          '.git',
+          'dist',
+          '__pycache__',
+        },
+        hide_by_pattern = {
+          '*.log',
+          'tmp/*',
+        },
+        force_visible_in_filter = true, -- ✅ This makes `/` and `D` work as expected
       },
     },
   },
