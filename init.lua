@@ -199,6 +199,17 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
+
+
+-- Move between windows using Ctrl + Arrow keys
+vim.keymap.set('n', '<C-Up>', '<C-w><C-k>', { desc = 'Move to window above' })
+vim.keymap.set('n', '<C-Down>', '<C-w><C-j>', { desc = 'Move to window below' })
+vim.keymap.set('n', '<C-Left>', '<C-w><C-h>', { desc = 'Move to left window' })
+vim.keymap.set('n', '<C-Right>', '<C-w><C-l>', { desc = 'Move to right window' })
+
+
+
+
 -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
 -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
 -- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
@@ -446,6 +457,11 @@ require('lazy').setup({
   --     -- Enable Telescope extensions if they are installed
       pcall(require('telescope').load_extension, 'fzf')
       pcall(require('telescope').load_extension, 'ui-select')
+      -- telescope.nvim + harpoon integration
+      local status_ok, telescope = pcall(require, "telescope")
+      if status_ok then
+        telescope.load_extension("harpoon")
+      end
 
       -- See `:help telescope.builtin`
       local builtin = require 'telescope.builtin'
@@ -459,6 +475,23 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+      vim.keymap.set('n', '<leader>ff', require('telescope.builtin').find_files, { desc = '[F]ind [F]ile' })
+
+
+      vim.keymap.set('n', '<leader>fd', function()
+      require('telescope.builtin').find_files({
+        prompt_title = 'Find Directory',
+        find_command = {
+         'fd', 
+          '--type', 'd', 
+          '--hidden', 
+          '--exclude', '.git',
+          '--exclude', 'Library',
+          '--exclude', '/Library' 
+          },
+      })
+      end, { desc = '[F]ind [D]irectory' })
+
 
   --     -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
@@ -1066,6 +1099,22 @@ require('lazy').setup({
       lazy = '💤 ',
     },
   },
+})
+
+-- Auto-open nvim-tree on startup at a specific directory
+vim.api.nvim_create_autocmd("VimEnter", {
+  callback = function(data)
+    local target_dir = vim.fn.expand("~/PycharmProjects/DASH")  -- 👈 customize your path here
+    vim.cmd.cd(target_dir)
+
+    local real_file = vim.fn.filereadable(data.file) == 1
+    local no_name = data.file == "" and vim.bo[data.buf].buftype == ""
+    if not real_file and not no_name then
+      return
+    end
+
+    require("nvim-tree.api").tree.open()
+  end,
 })
 
 -- The line beneath this is called `modeline`. See `:help modeline`
