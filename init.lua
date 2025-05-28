@@ -980,10 +980,128 @@ require('lazy').setup({
         dim_inactive = false,
         transparent_mode = false,
       }
-      vim.cmd.colorscheme 'gruvbox'
+      --vim.cmd.colorscheme 'gruvbox'
     end,
   },
-
+-- Catppuccin Theme
+{
+  "catppuccin/nvim",
+  name = "catppuccin",
+  priority = 1000,
+  config = function()
+    require("catppuccin").setup({
+      flavour = "mocha",
+      transparent_background = false,
+      integrations = {
+        cmp = true,
+        gitsigns = true,
+        nvimtree = true,
+        treesitter = true,
+        telescope = true,
+        which_key = true,
+        dap = { enabled = true, enable_ui = true },
+      },
+    })
+    vim.cmd.colorscheme("catppuccin")
+  end,
+},
+-- Nightfox Theme
+{
+  "EdenEast/nightfox.nvim",
+  name = "nightfox",
+  priority = 1000,
+  config = function()
+    require("nightfox").setup({
+      options = {
+        compile_path = vim.fn.stdpath("cache") .. "/nightfox",
+        compile_file_suffix = "_compiled",
+        transparent = false,
+        terminal_colors = true,
+        dim_inactive = false,
+        module_default = true,
+        colorblind = {
+          enable = false,
+          simulate_only = false,
+          severity = {
+            protan = 0,
+            deutan = 0,
+            tritan = 0,
+          },
+        },
+        styles = {
+          comments = "NONE",
+          conditionals = "NONE",
+          constants = "NONE",
+          functions = "NONE",
+          keywords = "NONE",
+          numbers = "NONE",
+          operators = "NONE",
+          strings = "NONE",
+          types = "NONE",
+          variables = "NONE",
+        },
+        inverse = {
+          match_paren = false,
+          visual = false,
+          search = false,
+        },
+        modules = {},
+      },
+      palettes = {},
+      specs = {},
+      groups = {},
+    })
+    vim.cmd.colorscheme("nightfox") -- or any other variant: dayfox, dawnfox, duskfox, nordfox, terafox, carbonfox
+  end,
+},
+{ -- OneDark Theme
+    'navarasu/onedark.nvim',
+    priority = 1000,
+    config = function()
+      require('onedark').setup({
+        -- Main options --
+        style = 'dark', -- Default theme style. Choose between 'dark', 'darker', 'cool', 'deep', 'warm', 'warmer' and 'light'
+        transparent = false,  -- Show/hide background
+        term_colors = true, -- Change terminal color as per the selected theme style
+        ending_tildes = false, -- Show the end-of-buffer tildes. By default they are hidden
+        cmp_itemkind_reverse = false, -- reverse item kind highlights in cmp menu
+        
+        -- toggle theme style ---
+        toggle_style_key = nil, -- keybind to toggle theme style. Leave it nil to disable it, or set it to a string, for example "<leader>ts"
+        toggle_style_list = {'dark', 'darker', 'cool', 'deep', 'warm', 'warmer', 'light'}, -- List of styles to toggle between
+        
+        -- Change code style ---
+        -- Options are italic, bold, underline, none
+        -- You can configure multiple style with comma separated, For e.g., keywords = 'italic,bold'
+        code_style = {
+            comments = 'italic',
+            keywords = 'none',
+            functions = 'none',
+            strings = 'none',
+            variables = 'none'
+        },
+        
+        -- Lualine options --
+        lualine = {
+            transparent = false, -- lualine center bar transparency
+        },
+        
+        -- Custom Highlights --
+        colors = {}, -- Override default colors
+        highlights = {}, -- Override highlight groups
+        
+        -- Plugins Config --
+        diagnostics = {
+            darker = true, -- darker colors for diagnostic
+            undercurl = true,   -- use undercurl instead of underline for diagnostics
+            background = true,    -- use background color for virtual text
+        },
+      })
+      
+      -- Load the colorscheme
+      vim.cmd.colorscheme 'onedark'
+    end,
+},
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
@@ -1024,11 +1142,38 @@ require('lazy').setup({
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
   },
-  { -- Highlight, edit, and navigate code
+  -- { -- Highlight, edit, and navigate code
+  --   'nvim-treesitter/nvim-treesitter',
+  --   build = ':TSUpdate',
+  --   main = 'nvim-treesitter.configs', -- Sets main module to use for opts
+  --   -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
+  --   opts = {
+  --     ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+  --     -- Autoinstall languages that are not installed
+  --     auto_install = true,
+  --     highlight = {
+  --       enable = true,
+  --       -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
+  --       --  If you are experiencing weird indenting issues, add the language to
+  --       --  the list of additional_vim_regex_highlighting and disabled languages for indent.
+  --       additional_vim_regex_highlighting = { 'ruby' },
+  --     },
+  --     indent = { enable = true, disable = { 'ruby' } },
+  --   },
+  --   -- There are additional nvim-treesitter modules that you can use to interact
+  --   -- with nvim-treesitter. You should go explore a few and see what interests you:
+  --   --
+  --   --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
+  --   --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
+  --   --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+  -- },
+{ -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
-    main = 'nvim-treesitter.configs', -- Sets main module to use for opts
-    -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter-textobjects',
+    },
+    main = 'nvim-treesitter.configs',
     opts = {
       ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
       -- Autoinstall languages that are not installed
@@ -1041,14 +1186,87 @@ require('lazy').setup({
         additional_vim_regex_highlighting = { 'ruby' },
       },
       indent = { enable = true, disable = { 'ruby' } },
+      
+      -- Add Treesitter Textobjects configuration
+      textobjects = {
+        select = {
+          enable = true,
+          lookahead = true,
+          keymaps = {
+            -- You can use the capture groups defined in textobjects.scm
+            ['af'] = '@function.outer',
+            ['if'] = '@function.inner',
+            ['ac'] = '@class.outer',
+            ['ic'] = '@class.inner',
+            ['aa'] = '@parameter.outer',
+            ['ia'] = '@parameter.inner',
+            ['al'] = '@loop.outer',
+            ['il'] = '@loop.inner',
+            ['ai'] = '@conditional.outer',
+            ['ii'] = '@conditional.inner',
+            ['ab'] = '@block.outer',
+            ['ib'] = '@block.inner',
+            ['as'] = '@statement.outer',
+            ['is'] = '@statement.inner',
+          },
+        },
+        move = {
+          enable = true,
+          set_jumps = true, -- whether to set jumps in the jumplist
+          goto_next_start = {
+            [']m'] = '@function.outer',
+            [']c'] = '@class.outer',
+            [']a'] = '@parameter.outer',
+            [']l'] = '@loop.outer',
+            [']i'] = '@conditional.outer',
+            [']b'] = '@block.outer',
+            [']s'] = '@statement.outer',
+          },
+          goto_next_end = {
+            [']M'] = '@function.outer',
+            [']C'] = '@class.outer',
+            [']A'] = '@parameter.outer',
+            [']L'] = '@loop.outer',
+            [']I'] = '@conditional.outer',
+            [']B'] = '@block.outer',
+            [']S'] = '@statement.outer',
+          },
+          goto_previous_start = {
+            ['[m'] = '@function.outer',
+            ['[c'] = '@class.outer',
+            ['[a'] = '@parameter.outer',
+            ['[l'] = '@loop.outer',
+            ['[i'] = '@conditional.outer',
+            ['[b'] = '@block.outer',
+            ['[s'] = '@statement.outer',
+          },
+          goto_previous_end = {
+            ['[M'] = '@function.outer',
+            ['[C'] = '@class.outer',
+            ['[A'] = '@parameter.outer',
+            ['[L'] = '@loop.outer',
+            ['[I'] = '@conditional.outer',
+            ['[B'] = '@block.outer',
+            ['[S'] = '@statement.outer',
+          },
+        },
+        swap = {
+          enable = true,
+          swap_next = {
+            ['<leader>a]'] = '@parameter.inner',
+            ['<leader>f]'] = '@function.outer',
+          },
+          swap_previous = {
+            ['<leader>a['] = '@parameter.inner',
+            ['<leader>f['] = '@function.outer',
+          },
+        },
+      },
     },
-    -- There are additional nvim-treesitter modules that you can use to interact
-    -- with nvim-treesitter. You should go explore a few and see what interests you:
-    --
-    --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
-    --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
-    --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
-  },
+},
+
+
+
 
   -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
@@ -1067,8 +1285,8 @@ require('lazy').setup({
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
   require 'kickstart.plugins.harpoon',
   require 'kickstart.plugins.persist',
-  require 'kickstart.plugins.nvim-tree'
-
+  require 'kickstart.plugins.nvim-tree',
+  require 'kickstart.plugins.obsidian'
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
   --
@@ -1104,7 +1322,7 @@ require('lazy').setup({
 -- Auto-open nvim-tree on startup at a specific directory
 vim.api.nvim_create_autocmd("VimEnter", {
   callback = function(data)
-    local target_dir = vim.fn.expand("~/PycharmProjects/DASH")  -- 👈 customize your path here
+    local target_dir = vim.fn.expand("~/PycharmProjects")  -- 👈 customize your path here
     vim.cmd.cd(target_dir)
 
     local real_file = vim.fn.filereadable(data.file) == 1
@@ -1114,6 +1332,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
     end
 
     require("nvim-tree.api").tree.open()
+    vim.cmd("vertical resize 50")  -- Adjust width here
   end,
 })
 
