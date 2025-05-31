@@ -7,15 +7,15 @@ return {
   },
   lazy = false,
   keys = {
-    { '<leader>ha', function() require('harpoon'):list():add() end, desc = 'Harpoon add file' },
-    { '<leader>ht', function() require('harpoon').ui:toggle_quick_menu(require('harpoon'):list()) end, desc = 'Harpoon toggle menu' },
-    { '<leader>h1', function() require('harpoon'):list():select(1) end, desc = 'Harpoon file 1' },
-    { '<leader>h2', function() require('harpoon'):list():select(2) end, desc = 'Harpoon file 2' },
-    { '<leader>h3', function() require('harpoon'):list():select(3) end, desc = 'Harpoon file 3' },
-    { '<leader>h4', function() require('harpoon'):list():select(4) end, desc = 'Harpoon file 4' },
-    { '<leader>hp', function() require('harpoon'):list():prev() end, desc = 'Harpoon prev file' },
-    { '<leader>hn', function() require('harpoon'):list():next() end, desc = 'Harpoon next file' },
-    { '<leader>hm', "<cmd>Telescope harpoon marks<CR>", desc = "Telescope Harpoon Marks" },
+      { "<leader>ha", function() require("harpoon"):list():append() end, desc = "Harpoon Add File" },
+    { "<leader>hm", function() require("harpoon").ui:toggle_quick_menu(require("harpoon"):list()) end, desc = "Harpoon Toggle Menu" },
+    { "<leader>hc", function() require("harpoon"):list():clear() end, desc = "Harpoon Clear All Files" },
+    { "<leader>hn", function() require("harpoon"):list():next() end, desc = "Harpoon Next File" },
+    { "<leader>hp", function() require("harpoon"):list():prev() end, desc = "Harpoon Previous File" },
+    { "<leader>h1", function() require("harpoon"):list():select(1) end, desc = "Harpoon File 1" },
+    { "<leader>h2", function() require("harpoon"):list():select(2) end, desc = "Harpoon File 2" },
+    { "<leader>h3", function() require("harpoon"):list():select(3) end, desc = "Harpoon File 3" },
+    { "<leader>h4", function() require("harpoon"):list():select(4) end, desc = "Harpoon File 4" },
   },
 config = function()
   local harpoon = require("harpoon")
@@ -28,6 +28,9 @@ config = function()
   list.config.save_on_change = true
   list.config.sync_on_ui_close = true
 
+  -- set marks specific to each git branch inside git repository
+  list.config.mark_branch = false,
+  
   -- Optional: Telescope integration
   pcall(require("telescope").load_extension, "harpoon")
 end,

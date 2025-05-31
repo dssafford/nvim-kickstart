@@ -173,6 +173,9 @@ vim.o.confirm = true
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
+vim.keymap.set('t', 'jj', [[<C-\><C-n>]], { desc = 'jj to exit terminal mode' })
+vim.keymap.set('i', 'jj', '<Esc>', { desc = 'jj to escape insert mode' })
+
 -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
@@ -199,16 +202,11 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
-
-
 -- Move between windows using Ctrl + Arrow keys
 vim.keymap.set('n', '<C-Up>', '<C-w><C-k>', { desc = 'Move to window above' })
 vim.keymap.set('n', '<C-Down>', '<C-w><C-j>', { desc = 'Move to window below' })
 vim.keymap.set('n', '<C-Left>', '<C-w><C-h>', { desc = 'Move to left window' })
 vim.keymap.set('n', '<C-Right>', '<C-w><C-l>', { desc = 'Move to right window' })
-
-
-
 
 -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
 -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
@@ -223,19 +221,15 @@ vim.keymap.set('n', '<C-Right>', '<C-w><C-l>', { desc = 'Move to right window' }
 
 vim.keymap.set('n', '<leader>tt', function()
   -- Get directory of current file
-  local dir = vim.fn.expand('%:p:h')
+  local dir = vim.fn.expand '%:p:h'
   if vim.fn.isdirectory(dir) == 1 then
-    vim.cmd('belowright split | enew')  -- horizontal split at bottom
-    vim.fn.termopen(vim.o.shell, { cwd = dir })  -- start terminal in file's dir
-    vim.cmd('startinsert')  -- enter insert mode
+    vim.cmd 'belowright split | enew' -- horizontal split at bottom
+    vim.fn.termopen(vim.o.shell, { cwd = dir }) -- start terminal in file's dir
+    vim.cmd 'startinsert' -- enter insert mode
   else
     vim.notify('Invalid directory for terminal', vim.log.levels.WARN)
   end
 end, { desc = '[T]erminal in file [T]ree dir' })
-
-
-
-
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -277,72 +271,31 @@ rtp:prepend(lazypath)
 --    :Lazy update
 --
 -- NOTE: Here is where you install your plugins.
+
 require('lazy').setup({
-  -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
+  -- Plugins as strings
   'NMAC427/guess-indent.nvim', -- Detect tabstop and shiftwidth automatically
 
-  -- NOTE: Plugins can also be added by using a table,
-  -- with the first argument being the link and the following
-  -- keys can be used to configure plugin behavior/loading/etc.
-  --
-  -- Use `opts = {}` to automatically pass options to a plugin's `setup()` function, forcing the plugin to be loaded.
-  --
-
-  -- Alternatively, use `config = function() ... end` for full control over the configuration.
-  -- If you prefer to call `setup` explicitly, use:
-  --    {
-  --        'lewis6991/gitsigns.nvim',
-  --        config = function()
-  --            require('gitsigns').setup({
-  --                -- Your gitsigns configuration here
-  --            })
-  --        end,
-  --    }
-  --
-  -- Here is a more advanced example where we pass configuration
-  -- options to `gitsigns.nvim`.
-  --
-  -- See `:help gitsigns` to understand what the configuration keys do
-  { -- Adds git related signs to the gutter, as well as utilities for managing changes
-    'lewis6991/gitsigns.nvim',
-    opts = {
-      signs = {
-        add = { text = '+' },
-        change = { text = '~' },
-        delete = { text = '_' },
-        topdelete = { text = '‾' },
-        changedelete = { text = '~' },
-      },
-    },
-  },
-
-  -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
-  --
-  -- This is often very useful to both group configuration, as well as handle
-  -- lazy loading plugins that don't need to be loaded immediately at startup.
-  --
-  -- For example, in the following configuration, we use:
-  --  event = 'VimEnter'
-  --
-  -- which loads which-key before all the UI elements are loaded. Events can be
-  -- normal autocommands events (`:help autocmd-events`).
-  --
-  -- Then, because we use the `opts` key (recommended), the configuration runs
-  -- after the plugin has been loaded as `require(MODULE).setup(opts)`.
-
-
-  { -- Useful plugin to show you pending keybinds.
+  -- Plugins as tables
+  -- {
+  --   'lewis6991/gitsigns.nvim',
+  --   opts = {
+  --     signs = {
+  --       add = { text = '+' },
+  --       change = { text = '~' },
+  --       delete = { text = '_' },
+  --       topdelete = { text = '‾' },
+  --       changedelete = { text = '~' },
+  --     },
+  --   },
+  -- },
+  {
     'folke/which-key.nvim',
-    event = 'VimEnter', -- Sets the loading event to 'VimEnter'
+    event = 'VimEnter',
     opts = {
-      -- delay between pressing a key and opening which-key (milliseconds)
-      -- this setting is independent of vim.o.timeoutlen
       delay = 0,
       icons = {
-        -- set icon mappings to true if you have a Nerd Font
         mappings = vim.g.have_nerd_font,
-        -- If you are using a Nerd Font: set icons.keys to an empty table which will use the
-        -- default which-key.nvim defined Nerd Font icons, otherwise define a string table
         keys = vim.g.have_nerd_font and {} or {
           Up = '<Up> ',
           Down = '<Down> ',
@@ -374,8 +327,6 @@ require('lazy').setup({
           F12 = '<F12>',
         },
       },
-
-      -- Document existing key chains
       spec = {
         { '<leader>s', group = '[S]earch' },
         { '<leader>t', group = '[T]oggle' },
@@ -454,13 +405,13 @@ require('lazy').setup({
         },
       }
 
-  --     -- Enable Telescope extensions if they are installed
+      --     -- Enable Telescope extensions if they are installed
       pcall(require('telescope').load_extension, 'fzf')
       pcall(require('telescope').load_extension, 'ui-select')
       -- telescope.nvim + harpoon integration
-      local status_ok, telescope = pcall(require, "telescope")
+      local status_ok, telescope = pcall(require, 'telescope')
       if status_ok then
-        telescope.load_extension("harpoon")
+        telescope.load_extension 'harpoon'
       end
 
       -- See `:help telescope.builtin`
@@ -477,23 +428,25 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
       vim.keymap.set('n', '<leader>ff', require('telescope.builtin').find_files, { desc = '[F]ind [F]ile' })
 
-
       vim.keymap.set('n', '<leader>fd', function()
-      require('telescope.builtin').find_files({
-        prompt_title = 'Find Directory',
-        find_command = {
-         'fd', 
-          '--type', 'd', 
-          '--hidden', 
-          '--exclude', '.git',
-          '--exclude', 'Library',
-          '--exclude', '/Library' 
+        require('telescope.builtin').find_files {
+          prompt_title = 'Find Directory',
+          find_command = {
+            'fd',
+            '--type',
+            'd',
+            '--hidden',
+            '--exclude',
+            '.git',
+            '--exclude',
+            'Library',
+            '--exclude',
+            '/Library',
           },
-      })
+        }
       end, { desc = '[F]ind [D]irectory' })
 
-
-  --     -- Slightly advanced example of overriding default behavior and theme
+      --     -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
         -- You can pass additional configuration to Telescope to change the theme, layout, etc.
         builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
@@ -517,7 +470,7 @@ require('lazy').setup({
       end, { desc = '[S]earch [N]eovim files' })
     end,
   },
-  
+
   -- LSP Plugins
   {
     -- `lazydev` configures Lua LSP for your Neovim config, runtime and plugins
@@ -983,165 +936,169 @@ require('lazy').setup({
       --vim.cmd.colorscheme 'gruvbox'
     end,
   },
--- Catppuccin Theme
-{
-  "catppuccin/nvim",
-  name = "catppuccin",
-  priority = 1000,
-  config = function()
-    require("catppuccin").setup({
-      flavour = "mocha",
-      transparent_background = false,
-      integrations = {
-        cmp = true,
-        gitsigns = true,
-        nvimtree = true,
-        treesitter = true,
-        telescope = true,
-        which_key = true,
-        dap = { enabled = true, enable_ui = true },
-      },
-    })
-    vim.cmd.colorscheme("catppuccin")
-  end,
-},
--- Nightfox Theme
-{
-  "EdenEast/nightfox.nvim",
-  name = "nightfox",
-  priority = 1000,
-  config = function()
-    require("nightfox").setup({
-      options = {
-        compile_path = vim.fn.stdpath("cache") .. "/nightfox",
-        compile_file_suffix = "_compiled",
-        transparent = false,
-        terminal_colors = true,
-        dim_inactive = false,
-        module_default = true,
-        colorblind = {
-          enable = false,
-          simulate_only = false,
-          severity = {
-            protan = 0,
-            deutan = 0,
-            tritan = 0,
+  -- Catppuccin Theme
+  {
+    'catppuccin/nvim',
+    name = 'catppuccin',
+    priority = 1000,
+    config = function()
+      require('catppuccin').setup {
+        flavour = 'mocha',
+        transparent_background = false,
+        integrations = {
+          cmp = true,
+          gitsigns = true,
+          nvimtree = true,
+          treesitter = true,
+          telescope = true,
+          which_key = true,
+          dap = { enabled = true, enable_ui = true },
+        },
+      }
+      vim.cmd.colorscheme 'catppuccin'
+    end,
+  },
+  -- Nightfox Theme
+  {
+    'EdenEast/nightfox.nvim',
+    name = 'nightfox',
+    priority = 1000,
+    config = function()
+      require('nightfox').setup {
+        options = {
+          compile_path = vim.fn.stdpath 'cache' .. '/nightfox',
+          compile_file_suffix = '_compiled',
+          transparent = false,
+          terminal_colors = true,
+          dim_inactive = false,
+          module_default = true,
+          colorblind = {
+            enable = false,
+            simulate_only = false,
+            severity = {
+              protan = 0,
+              deutan = 0,
+              tritan = 0,
+            },
           },
+          styles = {
+            comments = 'NONE',
+            conditionals = 'NONE',
+            constants = 'NONE',
+            functions = 'NONE',
+            keywords = 'NONE',
+            numbers = 'NONE',
+            operators = 'NONE',
+            strings = 'NONE',
+            types = 'NONE',
+            variables = 'NONE',
+          },
+          inverse = {
+            match_paren = false,
+            visual = false,
+            search = false,
+          },
+          modules = {},
         },
-        styles = {
-          comments = "NONE",
-          conditionals = "NONE",
-          constants = "NONE",
-          functions = "NONE",
-          keywords = "NONE",
-          numbers = "NONE",
-          operators = "NONE",
-          strings = "NONE",
-          types = "NONE",
-          variables = "NONE",
-        },
-        inverse = {
-          match_paren = false,
-          visual = false,
-          search = false,
-        },
-        modules = {},
-      },
-      palettes = {},
-      specs = {},
-      groups = {},
-    })
-    vim.cmd.colorscheme("nightfox") -- or any other variant: dayfox, dawnfox, duskfox, nordfox, terafox, carbonfox
-  end,
+        palettes = {},
+        specs = {},
+        groups = {},
+      }
+      vim.cmd.colorscheme 'nightfox' -- or any other variant: dayfox, dawnfox, duskfox, nordfox, terafox, carbonfox
+    end,
+  },
+  {
+  'ThePrimeagen/vim-be-good',
+  cmd = 'VimBeGood',
 },
-{ -- OneDark Theme
+  { -- OneDark Theme
     'navarasu/onedark.nvim',
     priority = 1000,
     config = function()
-      require('onedark').setup({
+      require('onedark').setup {
         -- Main options --
         style = 'dark', -- Default theme style. Choose between 'dark', 'darker', 'cool', 'deep', 'warm', 'warmer' and 'light'
-        transparent = false,  -- Show/hide background
+        transparent = false, -- Show/hide background
         term_colors = true, -- Change terminal color as per the selected theme style
         ending_tildes = false, -- Show the end-of-buffer tildes. By default they are hidden
         cmp_itemkind_reverse = false, -- reverse item kind highlights in cmp menu
-        
+
         -- toggle theme style ---
         toggle_style_key = nil, -- keybind to toggle theme style. Leave it nil to disable it, or set it to a string, for example "<leader>ts"
-        toggle_style_list = {'dark', 'darker', 'cool', 'deep', 'warm', 'warmer', 'light'}, -- List of styles to toggle between
-        
+        toggle_style_list = { 'dark', 'darker', 'cool', 'deep', 'warm', 'warmer', 'light' }, -- List of styles to toggle between
+
         -- Change code style ---
         -- Options are italic, bold, underline, none
         -- You can configure multiple style with comma separated, For e.g., keywords = 'italic,bold'
         code_style = {
-            comments = 'italic',
-            keywords = 'none',
-            functions = 'none',
-            strings = 'none',
-            variables = 'none'
+          comments = 'italic',
+          keywords = 'none',
+          functions = 'none',
+          strings = 'none',
+          variables = 'none',
         },
-        
+
         -- Lualine options --
         lualine = {
-            transparent = false, -- lualine center bar transparency
+          transparent = false, -- lualine center bar transparency
         },
-        
+
         -- Custom Highlights --
         colors = {}, -- Override default colors
         highlights = {}, -- Override highlight groups
-        
+
         -- Plugins Config --
         diagnostics = {
-            darker = true, -- darker colors for diagnostic
-            undercurl = true,   -- use undercurl instead of underline for diagnostics
-            background = true,    -- use background color for virtual text
+          darker = true, -- darker colors for diagnostic
+          undercurl = true, -- use undercurl instead of underline for diagnostics
+          background = true, -- use background color for virtual text
         },
-      })
-      
+      }
+
       -- Load the colorscheme
       vim.cmd.colorscheme 'onedark'
     end,
-},
-  -- Highlight todo, notes, etc in comments
-  { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
-
-  { -- Collection of various small independent plugins/modules
-    'echasnovski/mini.nvim',
-    config = function()
-      -- Better Around/Inside textobjects
-      --
-      -- Examples:
-      --  - va)  - [V]isually select [A]round [)]paren
-      --  - yinq - [Y]ank [I]nside [N]ext [Q]uote
-      --  - ci'  - [C]hange [I]nside [']quote
-      require('mini.ai').setup { n_lines = 500 }
-
-      -- Add/delete/replace surroundings (brackets, quotes, etc.)
-      --
-      -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
-      -- - sd'   - [S]urround [D]elete [']quotes
-      -- - sr)'  - [S]urround [R]eplace [)] [']
-      require('mini.surround').setup()
-
-      -- Simple and easy statusline.
-      --  You could remove this setup call if you don't like it,
-      --  and try some other statusline plugin
-      local statusline = require 'mini.statusline'
-      -- set use_icons to true if you have a Nerd Font
-      statusline.setup { use_icons = vim.g.have_nerd_font }
-
-      -- You can configure sections in the statusline by overriding their
-      -- default behavior. For example, here we set the section for
-      -- cursor location to LINE:COLUMN
-      ---@diagnostic disable-next-line: duplicate-set-field
-      statusline.section_location = function()
-        return '%2l:%-2v'
-      end
-
-      -- ... and there is more!
-      --  Check out: https://github.com/echasnovski/mini.nvim
-    end,
   },
+  -- Highlight todo, notes, etc in comments
+  -- { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
+
+  -- { -- Collection of various small independent plugins/modules
+  --   'echasnovski/mini.nvim',
+  --   config = function()
+  --     -- Better Around/Inside textobjects
+  --     --
+  --     -- Examples:
+  --     --  - va)  - [V]isually select [A]round [)]paren
+  --     --  - yinq - [Y]ank [I]nside [N]ext [Q]uote
+  --     --  - ci'  - [C]hange [I]nside [']quote
+  --     require('mini.ai').setup { n_lines = 500 }
+
+  --     -- Add/delete/replace surroundings (brackets, quotes, etc.)
+  --     --
+  --     -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
+  --     -- - sd'   - [S]urround [D]elete [']quotes
+  --     -- - sr)'  - [S]urround [R]eplace [)] [']
+  --     require('mini.surround').setup()
+
+  --     -- Simple and easy statusline.
+  --     --  You could remove this setup call if you don't like it,
+  --     --  and try some other statusline plugin
+  --     local statusline = require 'mini.statusline'
+  --     -- set use_icons to true if you have a Nerd Font
+  --     statusline.setup { use_icons = vim.g.have_nerd_font }
+
+  --     -- You can configure sections in the statusline by overriding their
+  --     -- default behavior. For example, here we set the section for
+  --     -- cursor location to LINE:COLUMN
+  --     ---@diagnostic disable-next-line: duplicate-set-field
+  --     statusline.section_location = function()
+  --       return '%2l:%-2v'
+  --     end
+
+  --     -- ... and there is more!
+  --     --  Check out: https://github.com/echasnovski/mini.nvim
+  --   end,
+  -- },
   -- { -- Highlight, edit, and navigate code
   --   'nvim-treesitter/nvim-treesitter',
   --   build = ':TSUpdate',
@@ -1167,7 +1124,7 @@ require('lazy').setup({
   --   --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
   --   --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
   -- },
-{ -- Highlight, edit, and navigate code
+  { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     dependencies = {
@@ -1186,7 +1143,7 @@ require('lazy').setup({
         additional_vim_regex_highlighting = { 'ruby' },
       },
       indent = { enable = true, disable = { 'ruby' } },
-      
+
       -- Add Treesitter Textobjects configuration
       textobjects = {
         select = {
@@ -1263,10 +1220,7 @@ require('lazy').setup({
         },
       },
     },
-},
-
-
-
+  },
 
   -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
@@ -1278,15 +1232,23 @@ require('lazy').setup({
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
   require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
-  -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
-  -- require 'kickstart.plugins.neo-tree',
+  require 'kickstart.plugins.indent_line',
+  require 'kickstart.plugins.lint',
+  require 'kickstart.plugins.autopairs',
+  --require 'kickstart.plugins.neo-tree',
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
   require 'kickstart.plugins.harpoon',
   require 'kickstart.plugins.persist',
   require 'kickstart.plugins.nvim-tree',
-  require 'kickstart.plugins.obsidian'
+  require 'kickstart.plugins.obsidian',
+  require 'kickstart.plugins.snacks',
+  require 'kickstart.plugins.oil',
+  require 'kickstart.plugins.recall'
+  -- require 'kickstart.plugins.mini'
+  --require 'kickstart.plugins.project'
+
+  --require 'kickstart.plugins.neogit'
+
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
   --
@@ -1320,22 +1282,31 @@ require('lazy').setup({
 })
 
 -- Auto-open nvim-tree on startup at a specific directory
-vim.api.nvim_create_autocmd("VimEnter", {
+vim.api.nvim_create_autocmd('VimEnter', {
   callback = function(data)
-    local target_dir = vim.fn.expand("~/PycharmProjects")  -- 👈 customize your path here
+    local target_dir = vim.fn.expand '~/PycharmProjects' -- 👈 customize your path here
     vim.cmd.cd(target_dir)
 
     local real_file = vim.fn.filereadable(data.file) == 1
-    local no_name = data.file == "" and vim.bo[data.buf].buftype == ""
+    local no_name = data.file == '' and vim.bo[data.buf].buftype == ''
     if not real_file and not no_name then
       return
     end
 
-    require("nvim-tree.api").tree.open()
-    vim.cmd("vertical resize 50")  -- Adjust width here
+    require('nvim-tree.api').tree.open()
+    vim.cmd 'vertical resize 50' -- Adjust width here
+  end,
+})
+vim.api.nvim_create_autocmd("DirChanged", {
+  callback = function()
+    local job_id = vim.b.terminal_job_id
+    if job_id then
+      local cwd = vim.fn.getcwd()
+      vim.fn.chansend(job_id, "cd " .. cwd .. "\n")
+      print("📁 Terminal updated to cwd: " .. cwd)
+    end
   end,
 })
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
-
