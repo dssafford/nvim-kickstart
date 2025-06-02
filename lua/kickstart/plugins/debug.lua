@@ -11,9 +11,9 @@ return {
         "mxsdev/nvim-dap-vscode-js",
         config = function()
           require("dap-vscode-js").setup({
-  debugger_path = vim.fn.stdpath("data") .. "/mason/packages/js-debug-adapter",
-  debugger_cmd = { "node", vim.fn.stdpath("data") .. "/mason/packages/js-debug-adapter/js-debug/dist/vsDebugServer.js" },
-  adapters = { "pwa-node", "pwa-chrome", "pwa-msedge", "node-terminal", "pwa-extensionHost" },
+        debugger_path = vim.fn.stdpath("data") .. "/mason/packages/js-debug-adapter",
+        debugger_cmd = { "node", vim.fn.stdpath("data") .. "/mason/packages/js-debug-adapter/js-debug/dist/vsDebugServer.js" },
+        adapters = { "pwa-node", "pwa-chrome", "pwa-msedge", "node-terminal", "pwa-extensionHost" },
 })
         end,
       },
@@ -25,7 +25,7 @@ return {
 
       require("dapui").setup({})
       require("nvim-dap-virtual-text").setup({ commented = true })
-      dap_python.setup("python3")
+      dap_python.setup(require("lspconfig.util").path.join(vim.fn.getcwd(), ".venv", "bin", "python"))
 
       vim.fn.sign_define("DapBreakpoint", { text = "", texthl = "DiagnosticSignError" })
       vim.fn.sign_define("DapBreakpointRejected", { text = "", texthl = "DiagnosticSignError" })
@@ -72,9 +72,11 @@ return {
           {
             type = "pwa-chrome",
             request = "launch",
-            name = "Launch Chrome to localhost",
+            name = "Next.js: Chrome",
             url = "http://localhost:3000",
             webRoot = "${workspaceFolder}",
+            trace = true,
+            skipFiles = { "<node_internals>/**", "**/node_modules/**" },
           },
         }
       end
