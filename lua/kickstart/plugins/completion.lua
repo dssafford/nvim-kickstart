@@ -24,4 +24,10 @@ return {
         ["<S-Tab>"] = cmp.mapping.select_prev_item(),
         ["<CR>"] = cmp.mapping.confirm({ select = true }),
       }),
-      sources = cmp.config
+      sources = cmp.config.sources({
+        { name = "nvim_lsp" },
+        { name = "luasnip" },
+      }),
+    })
+  end,
+}
