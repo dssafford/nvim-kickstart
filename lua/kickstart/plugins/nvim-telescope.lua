@@ -31,6 +31,7 @@ return {
       --  :Telescope help_tags
       --
       -- After running this command, a window will open up and you're able to
+      
       -- type in the prompt window. You'll see a list of `help_tags` options and
       -- a corresponding preview of the help.
       --

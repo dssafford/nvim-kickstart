@@ -273,7 +273,8 @@ require('lazy').setup({
   require 'kickstart.plugins.onedark',
   require 'kickstart.plugins.nvim-treesitter',
   require 'kickstart.plugins.nightfox',
-  require 'kickstart.plugins.catppuccin'
+  require 'kickstart.plugins.catppuccin',
+  require 'kickstart.plugins.recall'
   -- require 'kickstart.plugins.mini'
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
