@@ -1,0 +1,1 @@
+local s = ls.snipp
